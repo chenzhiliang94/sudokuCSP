@@ -17,6 +17,29 @@ class Sudoku(object):
     # you may add more classes/functions if you think is useful
     # However, ensure all the classes/functions are in this file ONLY
 
+    # CSP is list of list of domain or assigned value
+    # CSP shouldn't be a deepcopy!
+    # Domain would be a list of integer, assignment value would be an integer
+    def revise(self, csp, i, j):
+        iDomain = csp[i[0]][i[1]] # Must be a list, cannot be assigned
+        jDomain = csp[j[0]][j[1]] # Might be already assigned, or a list
+        if type(jDomain) == int:
+            if jDomain in iDomain:
+                iDomain.remove(jDomain)
+                return True
+            else:
+                return False
+        
+        if len(jDomain) <= 1:
+            if jDomain[0] in iDomain:
+                iDomain.remove(jDomain[0])
+                return True
+        
+        return False
+
+
+
+
 if __name__ == "__main__":
     # STRICTLY do NOT modify the code in the main function here
     if len(sys.argv) != 3:
