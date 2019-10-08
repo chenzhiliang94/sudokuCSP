@@ -143,6 +143,21 @@ class Sudoku(object):
         
         return False
 
+    def check_correctness(self, puzzle):
+        # puzzle is list of list;
+        # returns false if puzzle is wrong,
+        # true if it is correct
+        for row_index, row in enumerate(puzzle):
+            for col_index, value in enumerate(row):
+                index = row_index, col_index
+                neighbouring_arcs = self.get_neighbouring_constraints(index)
+                for neighbour in neighbouring_arcs:
+                    if value == puzzle[neighbour[0]][neighbour[1]]:
+                        print ((row_index, col_index))
+                        print (puzzle)
+                        print (puzzle[neighbour[0]][neighbour[1]])
+                        return False
+        return True
 
 
 
