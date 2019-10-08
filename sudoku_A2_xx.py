@@ -73,7 +73,7 @@ class Sudoku(object):
         for neighbour in neighbours:
             if not self.isAssigned(csp[neighbour[0]][neighbour[1]]):
                 total += 1
-        retur total
+        return total
 
     def isAssigned(self, i):
         return i == int
@@ -91,7 +91,7 @@ class Sudoku(object):
         for col_index in range(0, 9):
             neighbours.add((index[0], col_index))
 
-        topLeftOfBox = (index[0] % 3 + index[0], index[1] % 3 + index[1])
+        topLeftOfBox = (index[0] - (index[0] % 3), index[1] - (index[1] % 3))
 
         for i in range(topLeftOfBox[0], topLeftOfBox[0] + 3):
             for j in range(topLeftOfBox[1], topLeftOfBox[1] + 3):
