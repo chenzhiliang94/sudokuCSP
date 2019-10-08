@@ -6,6 +6,8 @@ class Sudoku(object):
         # you may add more attributes if you need
         self.puzzle = puzzle # self.puzzle is a list of lists
         self.ans = copy.deepcopy(puzzle) # self.ans is a list of lists
+        self.num_of_assignments = 0
+        self.num_of_empty = 0
 
     def solve(self):
         #TODO: Your code here
@@ -14,6 +16,11 @@ class Sudoku(object):
         # self.ans is a list of lists
         initial_domain = [1,2,3,4,5,6,7,8,9]
         transformed_puzzle = copy.deepcopy(self.puzzle)
+        for i in range(9):
+            for j in range(9):
+                if puzzle[i][j] == 0:
+                    self.num_of_empty += 1
+
         for row_index, row in enumerate(self.puzzle):
             for col_index, value in enumerate(row):
                 if value == 0:
@@ -24,9 +31,10 @@ class Sudoku(object):
         # in AC3,
         # loop through queue constraints tuple
         self.acthree(transformed_puzzle)
-        self.answer = self.backtracking(transformed_puzzle)
-        print (self.check_correctness( self.backtracking(transformed_puzzle)))
-        return self.answer
+        result = self.backtracking(transformed_puzzle)
+        print self.check_correctness(result)
+        print self.num_of_assignments - self.num_of_empty
+        return result
 
     # CSP is list of list of domain or assigned value
     # Deduce assignment from csp
@@ -41,6 +49,7 @@ class Sudoku(object):
         domain = csp[var[0]][var[1]]
         for val in domain:
             cspcopy = copy.deepcopy(csp) # Should be the only place required for deepcopy
+            self.num_of_assignments += 1
             cspcopy[var[0]][var[1]] = val # Assignment
             if self.acthree(cspcopy): # If inference never fail
                 result = self.backtracking(cspcopy)
