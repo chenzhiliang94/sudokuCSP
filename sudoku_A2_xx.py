@@ -12,8 +12,31 @@ class Sudoku(object):
 
         # don't print anything here. just resturn the answer
         # self.ans is a list of lists
+        initial_domain = [1,2,3,4,5,6,7,8,9]
+        transformed_puzzle = copy.deepcopy(self.puzzle)
+        for row_index, row in enumerate(self.puzzle):
+            for col_index, value in enumerate(row):
+                if value == 0:
+                    transformed_puzzle[row_index][col_index] = copy.deepcopy(initial_domain)
+                else:
+                    transformed_puzzle[row_index][col_index] = copy.deepcopy(value)
+        self.transformed_puzzle = transformed_puzzle
+
+        # define initial constraints into a queue
+        queue_constraint_tuple = []
+        for row_index, row in enumerate(self.transformed_puzzle):
+            for col_index, value in enumerate(row):
+                if isinstance(value, list):  # if variable
+                    print((row_index, col_index))
+                    neighbours = self.get_neighbouring_constraints(row_index, col_index)
+                    print(neighbours)
+                    queue_constraint_tuple += neighbours
+        # in AC3,
+        # loop through queue constraints tuple
+        self.acthree(queue_constraint_tuple)
         return self.ans
 
+<<<<<<< HEAD
     # CSP is list of list of domain or assigned value
     # Deduce assignment from csp
     def backtracking(self, csp):
@@ -64,6 +87,32 @@ class Sudoku(object):
 
     def isAssigned(self, i):
         return i == int
+=======
+    def get_neighbouring_constraints(self, i, j):
+        #get index of neighbours
+        list_of_neighbours = []
+        #same col
+        for row_index in range(0,i):
+            list_of_neighbours.append(((i,j), (row_index, j)))
+        for row_index in range(i+1,9):
+            list_of_neighbours.append(((i,j), (row_index, j)))
+
+        #same col
+        for col_index in range(0,j):
+            list_of_neighbours.append(((i,j), (i, col_index)))
+        for col_index in range(j+1,9):
+            list_of_neighbours.append(((i,j), (i, col_index)))
+
+        return list_of_neighbours
+
+
+
+    def acthree(self):
+        return
+
+
+
+>>>>>>> 74b8bc7294ef5ba607454767e631d04a812063a1
 
 
     # you may add more classes/functions if you think is useful
