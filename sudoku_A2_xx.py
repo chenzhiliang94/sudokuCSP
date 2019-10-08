@@ -17,40 +17,41 @@ class Sudoku(object):
         for row_index, row in enumerate(self.puzzle):
             for col_index, value in enumerate(row):
                 if value == 0:
-                    transformed_puzzle[row_index][col_index] = copy.deepcopy(initial_domain)
+                    transformed_puzzle[row_index][col_index] = initial_domain[::]
                 else:
-                    transformed_puzzle[row_index][col_index] = copy.deepcopy(value)
-        self.transformed_puzzle = transformed_puzzle
-
-        # define initial constraints into a queue
-        queue_constraint_tuple = []
-        for row_index, row in enumerate(self.transformed_puzzle):
-            for col_index, value in enumerate(row):
-                if isinstance(value, list):  # if variable
-                    print((row_index, col_index))
-                    neighbours = self.get_neighbouring_constraints((row_index, col_index))
-                    constraints = [((row_index, col_index), neighbour) for neighbour in neighbours]
-                    queue_constraint_tuple += constraints
+                    transformed_puzzle[row_index][col_index] = value
 
         # in AC3,
         # loop through queue constraints tuple
-        self.acthree(queue_constraint_tuple)
-        return self.ans
+        self.acthree(transformed_puzzle)
+        return self.backtracking(transformed_puzzle)
 
     # CSP is list of list of domain or assigned value
     # Deduce assignment from csp
+
+    # Returns False if result == failure, else return the csp
     def backtracking(self, csp):
         if self.assignmentIsComplete(csp):
             return csp
 
         # Get index of variable to assign
         var = self.selectUnassignedVar(csp)
+        domain = csp[var[0]][var[1]]
+        for val in domain:
+            cspcopy = copy.deepcopy(csp) # Should be the only place required for deepcopy
+            cspcopy[var[0]][var[1]] = val # Assignment
+            if self.acthree(cspcopy): # If inference never fail
+                result = self.backtracking(cspcopy)
+                if result != False: # If never fail
+                    return result
+
+        return False
 
 
     def assignmentIsComplete(self, csp):
-        for i in csp:
-            for j in i:
-                if not self.isAssigned(j):
+        for row in csp:
+            for elem in row:
+                if not self.isAssigned(elem):
                     return False
 
         return True
@@ -59,6 +60,23 @@ class Sudoku(object):
         vars = self.selectMostConstrainedVars(csp)
         var = self.selectMostConstrainingVar(csp, vars)
         return var
+
+    def selectMostConstrainedVars(self, csp):
+        vars = (9, []) # (Domain size, all vars with that domain size)
+        for i in range(9):
+            for j in range(9):
+                domain = csp[i][j]
+                if type(domain) == int:
+                    continue
+
+                size = len(domain)
+                if size == vars[0]:
+                    vars[1].append((i,j))
+
+                if size < vars[0]:
+                    vars = (size, [(i,j)])
+
+        return vars[1]
 
     def selectMostConstrainingVar(self, csp, vars):
         most = (-1, None)
@@ -102,26 +120,30 @@ class Sudoku(object):
         return list(neighbours)
 
 
-    def acthree(self, queue_constraint_tuple):
+    # Modifies CSP directly
+    # Returns False if not consistent
+    def acthree(self, csp):
+        # define initial constraints into a queue
+        queue_constraint_tuple = []
+        for row_index, row in enumerate(csp):
+            for col_index, value in enumerate(row):
+                if not self.isAssigned(value):  # if variable
+                    neighbours = self.get_neighbouring_constraints((row_index, col_index))
+                    constraints = [((row_index, col_index), neighbour) for neighbour in neighbours]
+                    queue_constraint_tuple += constraints
 
         while queue_constraint_tuple:
             constraint = queue_constraint_tuple.pop()
-            if self.revise(self.transformed_puzzle, constraint[0], constraint[1]):
+            if self.revise(csp, constraint[0], constraint[1]):
+                if len(csp[constraint[0][0]][constraint[0][1]]) == 0:
+                    return False
                 neighbouring_arcs = self.get_neighbouring_constraints(constraint[0])
+                neighbouring_arcs.remove(constraint[1])
                 for arc in neighbouring_arcs:
-                     if not isinstance(self.transformed_puzzle[arc[0]][arc[1]], list):
-                         continue
-                     else:
-                         queue_constraint_tuple.append(((arc, constraint[0])))
+                    if not self.isAssigned(csp[arc[0]][arc[1]]):
+                        queue_constraint_tuple.append((arc, constraint[0]))
 
-        print (self.transformed_puzzle)
-
-
-
-
-
-    # you may add more classes/functions if you think is useful
-    # However, ensure all the classes/functions are in this file ONLY
+        return True
 
     # CSP is list of list of domain or assigned value
     # CSP shouldn't be a deepcopy!
