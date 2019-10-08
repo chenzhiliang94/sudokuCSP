@@ -95,7 +95,7 @@ class Sudoku(object):
         return total
 
     def isAssigned(self, i):
-        return i == int
+        return type(i) == int
 
     # index is a tuple with (row, col)
     def get_neighbouring_constraints(self, index):
