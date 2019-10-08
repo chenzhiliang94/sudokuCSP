@@ -36,7 +36,6 @@ class Sudoku(object):
         self.acthree(queue_constraint_tuple)
         return self.ans
 
-<<<<<<< HEAD
     # CSP is list of list of domain or assigned value
     # Deduce assignment from csp
     def backtracking(self, csp):
@@ -69,42 +68,37 @@ class Sudoku(object):
         return most[1]
 
     def getNumOfUnassignedNeighbours(self, csp, var):
-        row = csp[var[0]]
-        col = [row[var[1]] for row in csp]
-        topLeftOfBox = (var[0] % 3 + var[0], var[1] % 3 + var[1])
-        box = []
-        sum = 0
-        for i in row:
-            if not self.isAssigned(i):
-                sum += 1
-
-        for j in col:
-            if not self.isAssigned(j):
-                sum += 1
-
-        return sum
-        
+        neighbours = self.get_neighbouring_constraints(var)
+        total = 0
+        for neighbour in neighbours:
+            if not self.isAssigned(csp[neighbour[0]][neighbour[1]]):
+                total += 1
+        retur total
 
     def isAssigned(self, i):
         return i == int
-=======
-    def get_neighbouring_constraints(self, i, j):
-        #get index of neighbours
-        list_of_neighbours = []
-        #same col
-        for row_index in range(0,i):
-            list_of_neighbours.append(((i,j), (row_index, j)))
-        for row_index in range(i+1,9):
-            list_of_neighbours.append(((i,j), (row_index, j)))
+
+    # index is a tuple with (row, col)
+    def get_neighbouring_constraints(self, index):
+
+        neighbours = set()
 
         #same col
-        for col_index in range(0,j):
-            list_of_neighbours.append(((i,j), (i, col_index)))
-        for col_index in range(j+1,9):
-            list_of_neighbours.append(((i,j), (i, col_index)))
+        for row_index in range(0, 9):
+            neighbours.add((row_index,index[1]))
 
-        return list_of_neighbours
+        #same row
+        for col_index in range(0, 9):
+            neighbours.add((index[0], col_index))
 
+        topLeftOfBox = (index[0] % 3 + index[0], index[1] % 3 + index[1])
+
+        for i in range(topLeftOfBox[0], topLeftOfBox[0] + 3):
+            for j in range(topLeftOfBox[1], topLeftOfBox[1] + 3):
+                neighbours.add((i,j))
+        
+        neighbours.remove((index)) # Remove self
+        return list(neighbours)
 
 
     def acthree(self):
@@ -112,7 +106,6 @@ class Sudoku(object):
 
 
 
->>>>>>> 74b8bc7294ef5ba607454767e631d04a812063a1
 
 
     # you may add more classes/functions if you think is useful
