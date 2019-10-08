@@ -31,6 +31,7 @@ class Sudoku(object):
                     neighbours = self.get_neighbouring_constraints(row_index, col_index)
                     print(neighbours)
                     queue_constraint_tuple += neighbours
+
         # in AC3,
         # loop through queue constraints tuple
         self.acthree(queue_constraint_tuple)
@@ -55,8 +56,19 @@ class Sudoku(object):
 
 
 
-    def acthree(self):
-        return
+    def acthree(self, queue_constraint_tuple):
+
+        while queue_constraint_tuple:
+            constraint = queue_constraint_tuple.popleft()
+            if self.revise(self.transformed_puzzle, constraint[0], constraint[1]):
+
+                #neighbouring_arcs = self.get_neighbouring_constraints(constraint[1][0], constraint[1][1])
+                #for arc in neighbouring_arcs:
+                #     if arc == value: continue
+                #     else: add ((arc, constraint[0]))
+
+            #
+        print (self.transformed_puzzle)
 
 
 
