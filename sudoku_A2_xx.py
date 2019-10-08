@@ -37,23 +37,69 @@ class Sudoku(object):
         self.acthree(queue_constraint_tuple)
         return self.ans
 
-    def get_neighbouring_constraints(self, i, j):
-        #get index of neighbours
-        list_of_neighbours = []
-        #same col
-        for row_index in range(0,i):
-            list_of_neighbours.append(((i,j), (row_index, j)))
-        for row_index in range(i+1,9):
-            list_of_neighbours.append(((i,j), (row_index, j)))
+    # CSP is list of list of domain or assigned value
+    # Deduce assignment from csp
+    def backtracking(self, csp):
+        if self.assignmentIsComplete(csp):
+            return csp
+
+        # Get index of variable to assign
+        var = self.selectUnassignedVar(csp)
+
+
+    def assignmentIsComplete(self, csp):
+        for i in csp:
+            for j in i:
+                if not self.isAssigned(j):
+                    return False
+
+        return True
+
+    def selectUnassignedVar(self, csp):
+        vars = self.selectMostConstrainedVars(csp)
+        var = self.selectMostConstrainingVar(csp, vars)
+        return var
+
+    def selectMostConstrainingVar(self, csp, vars):
+        most = (-1, None)
+        for var in vars:
+            numOfNeighbours = self.getNumOfUnassignedNeighbours(csp, var)
+            if numOfNeighbours > most[0]:
+                most = (numOfNeighbours, var)
+        return most[1]
+
+    def getNumOfUnassignedNeighbours(self, csp, var):
+        neighbours = self.get_neighbouring_constraints(var)
+        total = 0
+        for neighbour in neighbours:
+            if not self.isAssigned(csp[neighbour[0]][neighbour[1]]):
+                total += 1
+        return total
+
+    def isAssigned(self, i):
+        return i == int
+
+    # index is a tuple with (row, col)
+    def get_neighbouring_constraints(self, index):
+
+        neighbours = set()
 
         #same col
-        for col_index in range(0,j):
-            list_of_neighbours.append(((i,j), (i, col_index)))
-        for col_index in range(j+1,9):
-            list_of_neighbours.append(((i,j), (i, col_index)))
+        for row_index in range(0, 9):
+            neighbours.add((row_index,index[1]))
 
-        return list_of_neighbours
+        #same row
+        for col_index in range(0, 9):
+            neighbours.add((index[0], col_index))
 
+        topLeftOfBox = (index[0] - (index[0] % 3), index[1] - (index[1] % 3))
+
+        for i in range(topLeftOfBox[0], topLeftOfBox[0] + 3):
+            for j in range(topLeftOfBox[1], topLeftOfBox[1] + 3):
+                neighbours.add((i,j))
+        
+        neighbours.remove((index)) # Remove self
+        return list(neighbours)
 
 
     def acthree(self, queue_constraint_tuple):
