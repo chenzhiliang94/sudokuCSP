@@ -107,7 +107,7 @@ class Sudoku(object):
         while queue_constraint_tuple:
             constraint = queue_constraint_tuple.pop()
             if self.revise(self.transformed_puzzle, constraint[0], constraint[1]):
-                neighbouring_arcs = self.get_neighbouring_constraints(constraint[1])
+                neighbouring_arcs = self.get_neighbouring_constraints(constraint[0])
                 for arc in neighbouring_arcs:
                      if not isinstance(self.transformed_puzzle[arc[0]][arc[1]], list):
                          continue
