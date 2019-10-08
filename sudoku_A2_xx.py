@@ -14,6 +14,58 @@ class Sudoku(object):
         # self.ans is a list of lists
         return self.ans
 
+    # CSP is list of list of domain or assigned value
+    # Deduce assignment from csp
+    def backtracking(self, csp):
+        if self.assignmentIsComplete(csp):
+            return csp
+
+        # Get index of variable to assign
+        var = self.selectUnassignedVar(csp)
+
+
+    def assignmentIsComplete(self, csp):
+        for i in csp:
+            for j in i:
+                if not self.isAssigned(j):
+                    return False
+
+        return True
+
+    def selectUnassignedVar(self, csp):
+        vars = self.selectMostConstrainedVars(csp)
+        var = self.selectMostConstrainingVar(csp, vars)
+        return var
+
+    def selectMostConstrainingVar(self, csp, vars):
+        most = (-1, None)
+        for var in vars:
+            numOfNeighbours = self.getNumOfUnassignedNeighbours(csp, var)
+            if numOfNeighbours > most[0]:
+                most = (numOfNeighbours, var)
+        return most[1]
+
+    def getNumOfUnassignedNeighbours(self, csp, var):
+        row = csp[var[0]]
+        col = [row[var[1]] for row in csp]
+        topLeftOfBox = (var[0] % 3 + var[0], var[1] % 3 + var[1])
+        box = []
+        sum = 0
+        for i in row:
+            if not self.isAssigned(i):
+                sum += 1
+
+        for j in col:
+            if not self.isAssigned(j):
+                sum += 1
+
+        return sum
+        
+
+    def isAssigned(self, i):
+        return i == int
+
+
     # you may add more classes/functions if you think is useful
     # However, ensure all the classes/functions are in this file ONLY
 
