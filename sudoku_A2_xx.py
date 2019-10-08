@@ -47,9 +47,9 @@ class Sudoku(object):
 
 
     def assignmentIsComplete(self, csp):
-        for i in csp:
-            for j in i:
-                if not self.isAssigned(j):
+        for row in csp:
+            for elem in row:
+                if not self.isAssigned(elem):
                     return False
 
         return True
@@ -58,6 +58,23 @@ class Sudoku(object):
         vars = self.selectMostConstrainedVars(csp)
         var = self.selectMostConstrainingVar(csp, vars)
         return var
+
+    def selectMostConstrainedVars(self, csp):
+        vars = (9, []) # (Domain size, all vars with that domain size)
+        for i in range(9):
+            for j in range(9):
+                domain = csp[i][j]
+                if type(domain) == int:
+                    continue
+
+                size = len(domain)
+                if size == vars[0]:
+                    vars[1].append((i,j))
+
+                if size < vars[0]:
+                    vars = (size, [(i,j)])
+
+        return vars[1]
 
     def selectMostConstrainingVar(self, csp, vars):
         most = (-1, None)
