@@ -24,7 +24,7 @@ class Sudoku(object):
         # in AC3,
         # loop through queue constraints tuple
         self.acthree(transformed_puzzle)
-        return self.backtracking(transformed_puzzle)
+        print self.check_correctness( self.backtracking(transformed_puzzle))
 
     # CSP is list of list of domain or assigned value
     # Deduce assignment from csp
