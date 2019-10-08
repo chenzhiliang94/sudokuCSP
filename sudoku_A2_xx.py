@@ -44,6 +44,9 @@ class Sudoku(object):
 
         # Get index of variable to assign
         var = self.selectUnassignedVar(csp)
+        domain = csp[var[0]][var[1]]
+        for val in domain:
+            
 
 
     def assignmentIsComplete(self, csp):
