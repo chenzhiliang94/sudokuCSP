@@ -134,16 +134,11 @@ class Sudoku(object):
 
         while queue_constraint_tuple:
             constraint = queue_constraint_tuple.pop()
-<<<<<<< HEAD
             if self.revise(csp, constraint[0], constraint[1]):
                 if len(csp[constraint[0][0]][constraint[0][1]]) == 0:
                     return False
                 neighbouring_arcs = self.get_neighbouring_constraints(constraint[0])
                 neighbouring_arcs.remove(constraint[1])
-=======
-            if self.revise(self.transformed_puzzle, constraint[0], constraint[1]):
-                neighbouring_arcs = self.get_neighbouring_constraints(constraint[0])
->>>>>>> 194e5de3bf593c8407aa8d65c09903b7cd2ebf4d
                 for arc in neighbouring_arcs:
                     if not self.isAssigned(csp[arc[0]][arc[1]]):
                         queue_constraint_tuple.append((arc, constraint[0]))
