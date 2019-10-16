@@ -11,7 +11,6 @@ class Sudoku(object):
 
     def solve(self):
         #TODO: Your code here
-        print(self.check_correctness(self.puzzle))
         # don't print anything here. just resturn the answer
         # self.ans is a list of lists
         initial_domain = [1,2,3,4,5,6,7,8,9]
@@ -32,8 +31,6 @@ class Sudoku(object):
         # loop through queue constraints tuple
         self.acthree(transformed_puzzle)
         result = self.backtracking(transformed_puzzle)
-        print (self.check_correctness(result))
-        print ("number of re-assignments: " + str(self.num_of_assignments - self.num_of_empty))
         return result
 
     # CSP is list of list of domain or assigned value
@@ -175,21 +172,6 @@ class Sudoku(object):
                 return True
         
         return False
-
-    def check_correctness(self, puzzle):
-        # puzzle is list of list;
-        # returns false if puzzle is wrong,
-        # true if it is correct
-        for row_index, row in enumerate(puzzle):
-            for col_index, value in enumerate(row):
-                index = row_index, col_index
-                neighbouring_arcs = self.get_neighbouring_constraints(index)
-                for neighbour in neighbouring_arcs:
-                    if value == puzzle[neighbour[0]][neighbour[1]]:
-                        return False
-        return True
-
-
 
 if __name__ == "__main__":
     # STRICTLY do NOT modify the code in the main function here
