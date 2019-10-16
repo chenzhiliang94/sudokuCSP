@@ -17,7 +17,7 @@ class Sudoku(object):
         transformed_puzzle = copy.deepcopy(self.puzzle)
         for i in range(9):
             for j in range(9):
-                if puzzle[i][j] == 0:
+                if self.puzzle[i][j] == 0:
                     self.num_of_empty += 1
 
         for row_index, row in enumerate(self.puzzle):
